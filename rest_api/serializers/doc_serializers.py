@@ -14,12 +14,17 @@ class DoctorUsersSerializer(serializers.ModelSerializer):
         representation = super(DoctorUsersSerializer, self).to_representation(instance)
         return representation
 
+
 class DoctorRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=6, required=True, write_only=True)
 
     class Meta:
         model = DoctorUser
-        fields = ('username', "email")
+        fields = ('username', "email",
+        "phone_number",
+        "password", "fullname", "avatar",
+         "profession", "experience", "price",
+         "company", "address")
 
     def create(self, validated_data):
         user = DoctorUser.objects.create_user(**validated_data)

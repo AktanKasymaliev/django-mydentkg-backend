@@ -10,12 +10,13 @@ class DoctorUsersView(generics.ListAPIView):
     queryset = DoctorUser.objects.all()
     serializer_class = DoctorUsersSerializer
 
-class DoctorUserRegisterView(APIView):
+class DoctorUserRegisterView(generics.CreateAPIView):
+    serializer_class = DoctorRegisterSerializer
 
     def post(self, request):
         serializer = DoctorRegisterSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             if user:
-                send_confirmation_email(user)
+                send_confirmation_email(request, user)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
