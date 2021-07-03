@@ -1,6 +1,10 @@
 from django.db import models
 from rest_framework import serializers
 from doctorsUser.models import DoctorUser
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.contrib.auth import authenticate
+from django.utils.translation import gettext_lazy as _
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class DoctorUsersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,3 +33,34 @@ class DoctorRegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = DoctorUser.objects.create_user(**validated_data)
         return user
+
+class DoctorLoginSerializer(TokenObtainPairSerializer):
+    password = serializers.CharField(min_length=6, write_only=True)
+
+    def validate(self, validated_data):
+        email = validated_data.get('email')
+
+        password = validated_data.pop('password', None)
+        if not DoctorUser.objects.filter(email=email).exists():
+            raise serializers.ValidationError(_('User not found'))
+        user = authenticate(username=email, password=password)
+        if user and user.is_active:
+            refresh = self.get_token(user)
+            validated_data['refresh'] = str(refresh)
+            validated_data['access'] = str(refresh.access_token)
+            # validated_data['user'] = DoctorUsersSerializer(instance=user).data
+        return validated_data
+
+
+class DoctorChangePasswordSerializer(serializers.ModelSerializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    new_password_confirm = serializers.CharField(required=True)
+
+    def validate(self, validated_data):
+        new_password = validated_data.get('new_password')
+        new_password_confirm = validated_data.get('new_password_confirm')
+        if new_password != new_password_confirm:
+            raise serializers.ValidationError(_('Passwords don\'t match'))
+        return validated_data
+    
