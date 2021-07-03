@@ -13,6 +13,7 @@ def config() -> None:
     config_parse.read("settings.ini")
     DATABASE = "DATABASE"
     SYSTEM = "SYSTEM"
+    SMTP = 'SMTP'
 
     os.environ.setdefault("DATABASE_NAME", load_conf(config_parse, DATABASE, "NAME", "blog"))
     os.environ.setdefault("DATABASE_USER", load_conf(config_parse, DATABASE, "USER", "user"))
@@ -22,3 +23,6 @@ def config() -> None:
 
     os.environ.setdefault("DJANGO_DEBUG", load_conf(config_parse, SYSTEM, "DEBUG", "False"))
     os.environ.setdefault("DJANGO_KEY", load_conf(config_parse, SYSTEM, "DJANGO_KEY", "root"))
+
+    os.environ.setdefault("EMAIL_HOST_USER", load_conf(config_parse, SMTP, "EMAIL_HOST_USER", "test@gmail.com"))
+    os.environ.setdefault("EMAIL_HOST_PASSWORD", load_conf(config_parse, SMTP, "EMAIL_HOST_PASSWORD", "root"))

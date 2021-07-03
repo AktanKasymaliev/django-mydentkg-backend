@@ -1,11 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
+from django.core.validators import RegexValidator
+
+from .decorators import validate_user
 
 class UserManager(BaseUserManager):
 
     use_in_migrations = True
 
+    @validate_user
     def create_user(self, email, username, password):
         user = self.model(
             email=self.normalize_email(email),
@@ -15,6 +19,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    @validate_user
     def create_superuser(self, email, username, password):
         user = self.model(
             email=self.normalize_email(email),
@@ -27,11 +32,14 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
 
-    username = models.CharField(max_length=122)
+    username = models.CharField(verbose_name='Имя пользователя', max_length=122)
     email = models.EmailField(_('Email'), unique=True)
-    password = models.CharField(max_length=255)
+    password = models.CharField(verbose_name='Пароль', max_length=255)
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Пример телефоного формата: '+999999999'.")
+    phone_number = models.CharField(validators=[phone_regex], max_length=17, blank=True)
+
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -45,5 +53,6 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     class Meta:
+        db_table = 'auth_user'
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
