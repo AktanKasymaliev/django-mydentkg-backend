@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'doctorsUser',
 
     'rest_framework',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

@@ -7,6 +7,7 @@ from customUser.models import User
 from .token import account_activation_token
 from doctorsUser.models import DoctorUser
 
+
 @api_view(['POST', 'GET'])
 @renderer_classes([JSONRenderer])
 def activate_client(request, uidb64, token):
@@ -22,6 +23,7 @@ def activate_client(request, uidb64, token):
         return response.Response('Your account activated', status=status.HTTP_200_OK)
     else:
         return response.Response('Error 404', status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['POST', 'GET'])
 @renderer_classes([JSONRenderer])
