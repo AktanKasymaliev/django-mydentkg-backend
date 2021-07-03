@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
-
 from .decorators import validate_user
 
 class UserManager(BaseUserManager):
@@ -10,10 +9,11 @@ class UserManager(BaseUserManager):
     use_in_migrations = True
 
     @validate_user
-    def create_user(self, email, username, password):
+    def create_user(self, email, username, password, **extra_fields):
         user = self.model(
             email=self.normalize_email(email),
-            username=username
+            username=username,
+            **extra_fields
         )
         user.set_password(password)
         user.save(using=self._db)

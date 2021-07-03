@@ -1,6 +1,6 @@
 from rest_framework import generics
 from customUser.models import User
-from rest_api.serializers.client_user_serializers import ClientUsersSerializer
+from rest_api.serializers.client_user_serializers import ClientUsersSerializer, ClientRegisterSerializer
 from rest_api.send_mail import send_confirmation_email
 from rest_framework import status, response
 
@@ -9,10 +9,10 @@ class ClientUsersView(generics.ListAPIView):
     serializer_class = ClientUsersSerializer
 
 class ClientUserRegisterView(generics.CreateAPIView):
-    serializer_class = ClientUsersSerializer
+    serializer_class = ClientRegisterSerializer
 
     def post(self, request):
-        serializer = ClientUsersSerializer(data=request.data)
+        serializer = ClientRegisterSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             if user:
