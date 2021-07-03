@@ -52,7 +52,7 @@ class DoctorLoginSerializer(TokenObtainPairSerializer):
         return validated_data
 
 
-class DoctorChangePasswordSerializer(serializers.ModelSerializer):
+class DoctorChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
     new_password_confirm = serializers.CharField(required=True)

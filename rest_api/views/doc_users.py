@@ -48,7 +48,6 @@ class DoctorChangePasswordView(generics.UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         user = self.request.user
-        print(user)
         serializer: DoctorChangePasswordSerializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():

@@ -39,3 +39,15 @@ class ClientLoginSerializer(TokenObtainPairSerializer):
             validated_data['access'] = str(refresh.access_token)
             validated_data['user'] = ClientUsersSerializer(instance=user).data
         return validated_data
+
+class ClientChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+    new_password_confirm = serializers.CharField(required=True)
+
+    def validate(self, validated_data):
+        new_password = validated_data.get('new_password')
+        new_password_confirm = validated_data.get('new_password_confirm')
+        if new_password != new_password_confirm:
+            raise serializers.ValidationError(_('Passwords don\'t match'))
+        return validated_data

@@ -1,6 +1,7 @@
+from rest_api.permissions import IsOwnerOrReadOnly
 from rest_framework import generics
 from customUser.models import User
-from rest_api.serializers.client_user_serializers import (ClientUsersSerializer,
+from rest_api.serializers.client_user_serializers import (ClientChangePasswordSerializer, ClientUsersSerializer,
                      ClientRegisterSerializer, ClientLoginSerializer)
 from rest_api.send_mail import send_confirmation_email
 from rest_framework import status, response
@@ -37,3 +38,25 @@ class ClientLoginView(TokenObtainPairView):
                          security=[])
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+class ClientChangePasswordView(generics.UpdateAPIView):
+    serializer_class = ClientChangePasswordSerializer
+    model = User
+    permission_classes = (IsOwnerOrReadOnly,)
+
+    def update(self, request, *args, **kwargs):
+        user = self.request.user
+        serializer: ClientChangePasswordSerializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            if not user.check_password(serializer.data.get("old_password")):
+                return response.Response({"old_password": "Wrong password"}, status=status.HTTP_400_BAD_REQUEST)
+            user.set_password(serializer.data.get("new_password"))
+            user.save()
+            return response.Response({
+                'status': 'success',
+                'code': status.HTTP_200_OK,
+                'message': 'Password updated successfully',
+                'data': []
+            })
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
