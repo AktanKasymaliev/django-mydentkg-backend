@@ -7,7 +7,7 @@ class ClientUsersSerializer(serializers.ModelSerializer):
         fields = ('id', "username",
         "email", "phone_number", "is_active")
 
-class DoctorRegisterSerializer(serializers.ModelSerializer):
+class ClientRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=6, required=True, write_only=True)
 
     class Meta:
