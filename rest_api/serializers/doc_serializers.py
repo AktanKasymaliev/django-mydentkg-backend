@@ -63,4 +63,5 @@ class DoctorChangePasswordSerializer(serializers.Serializer):
         if new_password != new_password_confirm:
             raise serializers.ValidationError(_('Passwords don\'t match'))
         return validated_data
+
     

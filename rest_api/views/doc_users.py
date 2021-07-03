@@ -1,9 +1,11 @@
 from rest_framework import generics
+from rest_framework import response
 from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
 from rest_api.serializers.doc_serializers import (DoctorRegisterSerializer,
                 DoctorUsersSerializer, DoctorLoginSerializer, DoctorChangePasswordSerializer)
 from rest_framework.response import Response
-from rest_api.send_mail import send_confirmation_email
+from rest_api.send_mail import password_reset_token_created, send_confirmation_email
 from rest_framework import status
 from doctorsUser.models import DoctorUser
 from drf_yasg.utils import swagger_auto_schema
@@ -62,3 +64,12 @@ class DoctorChangePasswordView(generics.UpdateAPIView):
                 'data': []
             })
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DoctorForgotPasswordView(APIView):
+    permission_classes = [IsOwnerOrReadOnly, ]
+
+    @swagger_auto_schema(operation_description='Reset password doctor users', tags=['Doctor User'],
+                         security=[])
+    def get(self, request, *args, **kwargs):
+        password_reset_token_created(request)
+        return response.Response("Email was sended", status=status.HTTP_200_OK)

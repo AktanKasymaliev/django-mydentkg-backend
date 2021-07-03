@@ -1,12 +1,15 @@
+from rest_framework.views import APIView
 from rest_api.permissions import IsOwnerOrReadOnly
 from rest_framework import generics
 from customUser.models import User
-from rest_api.serializers.client_user_serializers import (ClientChangePasswordSerializer, ClientUsersSerializer,
+from rest_api.serializers.client_user_serializers import (ClientChangePasswordSerializer, 
+                     ClientUsersSerializer,
                      ClientRegisterSerializer, ClientLoginSerializer)
-from rest_api.send_mail import send_confirmation_email
+from rest_api.send_mail import send_confirmation_email, password_reset_token_created
 from rest_framework import status, response
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework_simplejwt.views import TokenObtainPairView
+
 
 class ClientUsersView(generics.ListAPIView):
     queryset = User.objects.all()
@@ -34,7 +37,7 @@ class ClientUserRegisterView(generics.CreateAPIView):
 class ClientLoginView(TokenObtainPairView):
     serializer_class = ClientLoginSerializer
 
-    @swagger_auto_schema(operation_description='Login client users', tags=['Doctor User'],
+    @swagger_auto_schema(operation_description='Login client users', tags=['Client User'],
                          security=[])
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
@@ -60,3 +63,13 @@ class ClientChangePasswordView(generics.UpdateAPIView):
                 'data': []
             })
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ClientForgotPasswordView(APIView):
+    permission_classes = [IsOwnerOrReadOnly, ]
+
+    @swagger_auto_schema(operation_description='Reset password client users', tags=['Client User'],
+                         security=[])
+    def get(self, request, *args, **kwargs):
+        password_reset_token_created(request)
+        return response.Response("Email was sended", status=status.HTTP_200_OK)

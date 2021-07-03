@@ -51,3 +51,7 @@ class ClientChangePasswordSerializer(serializers.Serializer):
         if new_password != new_password_confirm:
             raise serializers.ValidationError(_('Passwords don\'t match'))
         return validated_data
+
+class ForgotPasswordSerializer(ClientChangePasswordSerializer):
+    def validate(self, validated_data):
+        return super().validate(validated_data)

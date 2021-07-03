@@ -7,6 +7,7 @@ from django.utils.encoding import force_bytes, force_text
 from .token import account_activation_token
 from config.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail
+from django.utils.html import strip_tags
 
 def send_confirmation_email(request, user):
     current_site = get_current_site(request).domain
@@ -32,4 +33,28 @@ def send_confirmation_email(request, user):
         [to_email, ],
         html_message=message,
     )
-    
+
+def password_reset_token_created(request, *args, **kwargs):
+    current_site = get_current_site(request).domain
+    context = {
+        "small_text_detail": "Сброс пароля",
+        "for_pass_confirm": "Нажмите на кнопку что бы создать новый пароль",
+        "email": request.user.email,
+        "domain": current_site,
+        "uid": urlsafe_base64_encode(force_bytes(request.user.pk)),
+        "token": account_activation_token.make_token(request.user),
+    }
+
+    msg_html = render_to_string("account/reset_password_email.html", context)
+    plain_message = strip_tags(msg_html)
+    subject = "Reset password"
+
+    send_mail(
+        subject,
+        plain_message,
+        # from:
+        EMAIL_HOST_USER,
+        # to:
+        [request.user.email],
+        html_message=msg_html,
+    )
