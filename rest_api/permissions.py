@@ -9,3 +9,7 @@ class IsOwnerOrReadOnly(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return view.user == request.user
+
+class IsOwner(BasePermission):
+    def has_object_permission(self, request, obj, view):
+        return request.user.is_authenticated and request.user == view.author.username

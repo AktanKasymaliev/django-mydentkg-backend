@@ -1,4 +1,6 @@
-from doctorsUser.models import Reception, Reserve
+from rest_framework import response, status
+from rest_framework.views import APIView
+from doctorsUser.models import DoctorUser, Reception, Reserve
 from comments.models import Comments
 from rest_api.serializers.serializers import CommentSerializer, CommentsAddSerializers, MakeReserverSerializer, ReceptionAddSerializer, ReceptionSerializer, ReservedSerializers
 from rest_framework import generics, permissions
@@ -59,7 +61,7 @@ class ReservedView(generics.ListAPIView):
 
 class MakeReserveView(generics.CreateAPIView):
     serializer_class = MakeReserverSerializer
-    queryset = Reserve.objects.select_related('reserve')
+    queryset = Reserve.objects.select_related('doctor')
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -68,3 +70,15 @@ class MakeReserveView(generics.CreateAPIView):
                          security=[])
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+class CategoryListView(APIView):
+
+    def get(self, request, category):
+        try:
+            doctors = DoctorUser.objects.filter(profession=category)
+            if doctors.count() == 0:
+                return response.Response({category: "В данной специализации отстутсвуют специалисты"}, status=status.HTTP_404_NOT_FOUND)
+            return response.Response({category: doctors}, status=status.HTTP_200_OK)
+        except DoctorUser.DoesNotExist:
+            return response.Response({category: "В данной специализации отстутсвуют специалисты"}, status=status.HTTP_404_NOT_FOUND)
+        

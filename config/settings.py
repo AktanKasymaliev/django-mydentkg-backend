@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'customUser',
     'doctorsUser',
     'comments',
+    'ratings',
 
     'rest_framework',
     'drf_yasg',

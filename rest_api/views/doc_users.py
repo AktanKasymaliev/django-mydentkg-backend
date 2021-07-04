@@ -16,10 +16,19 @@ class DoctorUsersView(generics.ListAPIView):
     queryset = DoctorUser.objects.all()
     serializer_class = DoctorUsersSerializer
 
-    @swagger_auto_schema(operation_description='List doctor users', tags=['Doctor User'],
+    @swagger_auto_schema(operation_description='List doctor users (can add params(?search) for search)', tags=['Doctor User'],
                          security=[])
     def get(self, request):
         return self.list(request)
+    
+    def get_queryset(self):
+        search = self.request.query_params.get("search")
+        query = super().get_queryset()
+        if search:
+            query = query.filter(fullname__icontains=search)
+            return query
+        else:
+            return query
 
 class DoctorUserRegisterView(generics.CreateAPIView):
     serializer_class = DoctorRegisterSerializer
