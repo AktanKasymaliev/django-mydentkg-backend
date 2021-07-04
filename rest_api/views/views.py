@@ -39,6 +39,9 @@ class ReceptionAddView(generics.CreateAPIView):
     serializer_class = ReceptionAddSerializer
     queryset = Reception.objects.select_related('doctor')
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     @swagger_auto_schema(operation_description='Add free times', tags=['Reception'],
                          security=[])
     def post(self, request, *args, **kwargs):
@@ -57,6 +60,9 @@ class ReservedView(generics.ListAPIView):
 class MakeReserveView(generics.CreateAPIView):
     serializer_class = MakeReserverSerializer
     queryset = Reserve.objects.select_related('reserve')
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     @swagger_auto_schema(operation_description='Reserve free times', tags=['Reception'],
                          security=[])
