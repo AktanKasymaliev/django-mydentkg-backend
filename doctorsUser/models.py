@@ -5,6 +5,18 @@ from django.db import models
 from customUser.models import User
 from django.utils.translation import ugettext_lazy as _
 
+
+WEEKDAYS = [
+    (1, _("Monday")),
+    (2, _("Tuesday")),
+    (3, _("Wednesday")),
+    (4, _("Thursday")),
+    (5, _("Friday")),
+    (6, _("Saturday")),
+    (7, _("Sunday")),
+ ]
+
+
 class UserManager(BaseUserManager):
 
     use_in_migrations = True
@@ -25,6 +37,7 @@ class DoctorUser(User):
     fullname = models.CharField(verbose_name='Ф.И.О', max_length=500)
 
     avatar = models.ImageField(upload_to='docs_avatars', verbose_name='Аватар', blank=True, null=True)
+    license_image = models.ImageField(upload_to='licenses', verbose_name='Лицензия')
     profession = models.CharField(verbose_name='Профессия врача', max_length=255)
     experience = models.CharField(verbose_name='Стаж', max_length=100)
     price = models.PositiveIntegerField(verbose_name='Цена приема')
@@ -41,3 +54,24 @@ class DoctorUser(User):
         db_table = 'doctors_user'
         verbose_name = 'Доктор'
         verbose_name_plural = 'Доктора'
+
+class Reception(models.Model):
+    time = models.TimeField(verbose_name='Свободное время')
+    date = models.DateField(verbose_name='Дата приема')
+    doctor = models.ForeignKey(DoctorUser, on_delete=models.CASCADE, related_name='time')
+
+    class Meta:
+        db_table = 'reciption'
+        verbose_name = 'Прием врача'
+        verbose_name_plural = 'Приемы врачей'
+
+class Reserve(models.Model):
+    who = models.ForeignKey(User, on_delete=models.CASCADE, related_name='who')
+    time = models.TimeField(verbose_name='Забранированное время')
+    date = models.DateField(verbose_name='Дата приема')
+    doctor = models.ForeignKey(DoctorUser, on_delete=models.CASCADE, related_name='reserve')
+
+    class Meta:
+        db_table = 'reserver'
+        verbose_name = 'Забронированное время'
+        verbose_name_plural = 'Забронированные времена'

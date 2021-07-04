@@ -5,6 +5,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .serializers import ReceptionSerializer, ReservedSerializers
 
 class DoctorUsersSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,6 +17,8 @@ class DoctorUsersSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super(DoctorUsersSerializer, self).to_representation(instance)
+        representation['free_times'] = ReceptionSerializer(instance.time.all(), many=True).data
+        representation['reserved_time'] = ReservedSerializers(instance.reserve.all(), many=True).data
         return representation
 
 
@@ -25,7 +28,7 @@ class DoctorRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = DoctorUser
         fields = ('username', "email",
-        "phone_number",
+        "phone_number", "license_image",
         "password", "fullname", "avatar",
          "profession", "experience", "price",
          "company", "address")

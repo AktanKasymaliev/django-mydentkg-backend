@@ -1,3 +1,4 @@
+from rest_api.views.views import CommentAddView, CommentsView, MakeReserveView, ReceptionAddView, ReceptionView, ReservedView
 from django.urls import path
 from rest_api.views.doc_users import (DoctorChangePasswordView,
                                      DoctorUsersView, DoctorUserRegisterView, 
@@ -24,4 +25,12 @@ urlpatterns = [
 
     path('api/v1/client/users/activate/<slug:uidb64>/<slug:token>/', activate_client, name='activate_client'),
     path('api/v1/doctors/users/activate/<slug:uidb64>/<slug:token>/', activate_doctors, name='activate_doctors'),
+
+    path("api/v1/comments/", CommentsView.as_view()),
+    path("api/v1/comments/add/", CommentAddView.as_view()),
+
+    path("api/v1/receptions/", ReceptionView.as_view()),
+    path("api/v1/reception/add/", ReceptionAddView.as_view()),
+    path("api/v1/reserve/", MakeReserveView.as_view()),
+    path("api/v1/reserved/time/", ReservedView.as_view()),
 ]

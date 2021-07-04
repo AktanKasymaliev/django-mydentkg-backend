@@ -43,10 +43,12 @@ INSTALLED_APPS = [
 
     'customUser',
     'doctorsUser',
+    'comments',
 
     'rest_framework',
     'drf_yasg',
     'rest_framework_simplejwt',
+    'django_cleanup',
 ]
 
 MIDDLEWARE = [
@@ -141,7 +143,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
 }
