@@ -1,9 +1,9 @@
-from customUser import models
 from django.contrib import admin
 from doctorsUser.models import DoctorUser, Reception, Reserve
 
 class ReceptionAdmin(admin.StackedInline):
     model = Reception
+    fk_name = "client_user"
 
 @admin.register(DoctorUser)
 class UsersAdminPanel(admin.ModelAdmin):

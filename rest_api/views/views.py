@@ -2,7 +2,8 @@ from rest_framework import response, status
 from rest_framework.views import APIView
 from doctorsUser.models import DoctorUser, Reception, Reserve
 from comments.models import Comments
-from rest_api.serializers.serializers import CommentSerializer, CommentsAddSerializers, MakeReserverSerializer, ReceptionAddSerializer, ReceptionSerializer, ReservedSerializers
+from rest_api.serializers.serializers import CommentSerializer, CommentsAddSerializers, \
+     MakeReserverSerializer, ReceptionAddSerializer, ReceptionSerializer, ReservedSerializers
 from rest_framework import generics, permissions
 from drf_yasg.utils import swagger_auto_schema
 

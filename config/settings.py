@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'doctorsUser',
     'comments',
     'ratings',
+    "rest_api",
 
     'corsheaders',
     'rest_framework',
@@ -68,9 +69,11 @@ CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     'http://hidden-basin-43610.herokuapp.com',
+    "http://127.0.0.1:8000"
 ] # If this is used, then not need to use `CORS_ALLOW_ALL_ORIGINS = True`
 CORS_ALLOWED_ORIGIN_REGEXES = [
     'http://hidden-basin-43610.herokuapp.com',
+    "http://127.0.0.1:8000"
 ]
 
 ROOT_URLCONF = 'config.urls'

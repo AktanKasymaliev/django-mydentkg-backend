@@ -27,7 +27,7 @@ class ReceptionSerializer(serializers.ModelSerializer):
 class ReceptionAddSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reception
-        fields = ('id', 'doctor', "date", 'time')
+        fields = ('id', "client_user",  'doctor', "from_to", "to","date",)
 
     def create(self, validated_data):
         reception = Reception.objects.create(**validated_data)
@@ -36,20 +36,20 @@ class ReceptionAddSerializer(serializers.ModelSerializer):
 class ReservedSerializers(serializers.ModelSerializer):
     class Meta:
         model = Reserve
-        fields = ('id', 'who', 'doctor', "date", 'time')
+        fields = ('id', 'who', 'doctor', "from_to", "to", "date")
 
 class MakeReserverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reserve
-        fields = ('id', 'who', 'doctor', "date", 'time')
+        fields = ('id','doctor', "from_to", "to", "date")
 
     def create(self, validated_data):
         request = self.context.get("request")
-        date, time, doctor = validated_data['date'], validated_data['time'], validated_data['doctor']
-        if Reception.objects.filter(doctor=doctor, date=date, time=time).exists():
+        date, to, from_to, doctor = validated_data['date'], validated_data['to'], validated_data['from_to'], validated_data['doctor']
+        if Reception.objects.filter(doctor=doctor, date=date, to=to, from_to=from_to).exists():
             reserve = Reserve.objects.create(who=request.user, **validated_data)
             return reserve
-        elif Reserve.objects.filter(doctor=doctor, date=date, time=time).exists():
+        elif Reserve.objects.filter(doctor=doctor, date=date, to=to, from_to=from_to).exists():
             raise serializers.ValidationError("Время занято!")
         else:
             raise serializers.ValidationError("Указонного времени нет!")

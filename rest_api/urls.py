@@ -1,4 +1,5 @@
-from rest_api.views.views import CategoryListView, CommentAddView, CommentsView, MakeReserveView, ReceptionAddView, ReceptionView, ReservedView
+from rest_api.views.views import CategoryListView, CommentAddView, \
+     CommentsView, MakeReserveView, ReceptionAddView, ReceptionView, ReservedView
 from django.urls import path
 from rest_api.views.doc_users import (DoctorChangePasswordView,
                                      DoctorUsersView, DoctorUserRegisterView, 
@@ -33,8 +34,8 @@ urlpatterns = [
 
     path("api/v1/receptions/", ReceptionView.as_view()),
     path("api/v1/reception/add/", ReceptionAddView.as_view()),
-    path("api/v1/reserve/", MakeReserveView.as_view()),
-    path("api/v1/reserved/time/", ReservedView.as_view()),
+    path("api/v1/make/reserve/", MakeReserveView.as_view()),
+    path("api/v1/reserves/", ReservedView.as_view()),
 
     path("api/v1/rating/add/", RatingAddView.as_view()),
     path("api/v1/rating/remove/<int:pk>/", RatingRemove.as_view()),

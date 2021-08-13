@@ -1,10 +1,12 @@
-from customUser.decorators import validate_user
+from django.contrib.auth import get_user_model
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
+from django.utils.translation import ugettext_lazy as _  
+from django.utils import timezone
 
-from customUser.models import User
-from django.utils.translation import ugettext_lazy as _
+from customUser.decorators import validate_user
 
+User = get_user_model()
 
 class UserManager(BaseUserManager):
 
@@ -46,9 +48,11 @@ class DoctorUser(User):
         verbose_name_plural = 'Доктора'
 
 class Reception(models.Model):
-    time = models.TimeField(verbose_name='Свободное время')
-    date = models.DateField(verbose_name='Дата приема')
+    client_user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name="reception")
     doctor = models.ForeignKey(DoctorUser, on_delete=models.CASCADE, related_name='time')
+    from_to = models.TimeField(verbose_name='От')
+    to = models.TimeField(verbose_name="До")
+    date = models.DateField(verbose_name='Дата приема')
 
     class Meta:
         db_table = 'reciption'
@@ -56,10 +60,12 @@ class Reception(models.Model):
         verbose_name_plural = 'Приемы врачей'
 
 class Reserve(models.Model):
-    who = models.ForeignKey(User, on_delete=models.CASCADE, related_name='who')
-    time = models.TimeField(verbose_name='Забранированное время')
-    date = models.DateField(verbose_name='Дата приема')
-    doctor = models.ForeignKey(DoctorUser, on_delete=models.CASCADE, related_name='reserve')
+    
+    who = models.ForeignKey(verbose_name="Клиент", to=User, on_delete=models.CASCADE, related_name='who')
+    doctor = models.ForeignKey(verbose_name="Доктор", to=DoctorUser, on_delete=models.CASCADE, related_name='reserve')
+    from_to = models.TimeField(verbose_name='Забранированно От', default="18:30:18")
+    to = models.TimeField(verbose_name="Забранированно До", default="19:30:18")
+    date = models.DateField(verbose_name='Забранированная дата', default="2021-08-13")
 
     class Meta:
         db_table = 'reserver'

@@ -51,7 +51,7 @@ class DoctorLoginSerializer(TokenObtainPairSerializer):
             refresh = self.get_token(user)
             validated_data['refresh'] = str(refresh)
             validated_data['access'] = str(refresh.access_token)
-            # validated_data['user'] = DoctorUsersSerializer(instance=user).data
+            validated_data['user'] = DoctorUsersSerializer(instance=user).data
         return validated_data
 
 
