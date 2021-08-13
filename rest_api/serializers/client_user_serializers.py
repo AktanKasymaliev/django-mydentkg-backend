@@ -32,13 +32,15 @@ class ClientLoginSerializer(TokenObtainPairSerializer):
         password = validated_data.pop('password', None)
         if not User.objects.filter(email=email).exists():
             raise serializers.ValidationError(_('User not found'))
-        user = authenticate(username=email, password=password)
-        if user and user.is_active:
-            refresh = self.get_token(user)
-            validated_data['refresh'] = str(refresh)
-            validated_data['access'] = str(refresh.access_token)
+        user = User.objects.get(email=email)
+        if user and user.is_active and user.check_password(password):
+            self.refresh = self.get_token(user)
+            validated_data['refresh'] = str(self.refresh)
+            validated_data['access'] = str(self.refresh.access_token)
             validated_data['user'] = ClientUsersSerializer(instance=user).data
-        return validated_data
+            return validated_data
+        raise serializers.ValidationError("Email or password is incorrect")
+
 
 class ClientChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
