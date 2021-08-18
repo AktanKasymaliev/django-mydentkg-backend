@@ -47,12 +47,10 @@ class DoctorLoginSerializer(TokenObtainPairSerializer):
         if not DoctorUser.objects.filter(email=email).exists():
             raise serializers.ValidationError(_('User not found'))
         user = DoctorUser.objects.get(email=email)
-        print(user.check_password(password))
         if user and user.is_active and user.check_password(password):
             refresh = self.get_token(user)
             validated_data['refresh'] = str(refresh)
             validated_data['access'] = str(refresh.access_token)
-            validated_data['user'] = DoctorUsersSerializer(instance=user).data
             return validated_data
         raise serializers.ValidationError("Email or password is incorrect")
 
@@ -68,5 +66,3 @@ class DoctorChangePasswordSerializer(serializers.Serializer):
         if new_password != new_password_confirm:
             raise serializers.ValidationError(_('Passwords don\'t match'))
         return validated_data
-
-    

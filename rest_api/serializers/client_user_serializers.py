@@ -37,7 +37,6 @@ class ClientLoginSerializer(TokenObtainPairSerializer):
             self.refresh = self.get_token(user)
             validated_data['refresh'] = str(self.refresh)
             validated_data['access'] = str(self.refresh.access_token)
-            validated_data['user'] = ClientUsersSerializer(instance=user).data
             return validated_data
         raise serializers.ValidationError("Email or password is incorrect")
 

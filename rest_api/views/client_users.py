@@ -1,3 +1,4 @@
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_api.permissions import IsOwnerOrReadOnly
 from rest_framework import generics
@@ -73,3 +74,21 @@ class ClientForgotPasswordView(APIView):
     def get(self, request, *args, **kwargs):
         password_reset_token_created(request)
         return response.Response("Email was sended", status=status.HTTP_200_OK)
+
+class ClientInfo(generics.ListAPIView):
+    model = User
+    serializer_class = ClientUsersSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            data = {
+                "id": request.user.id,
+                "username": request.user.username,
+                "email": request.user.email,
+                "phone_number": request.user.phone_number,
+                "is_active": request.user.is_active,
+            }
+            return response.Response(data, status=200)
+        except:
+            return response.Response("Login does not succeded", status=401)
