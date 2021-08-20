@@ -41,7 +41,7 @@ class ReservedSerializers(serializers.ModelSerializer):
 class MakeReserverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reserve
-        fields = ('id','doctor', "from_to", "to", "date")
+        fields = ('id', "who", 'doctor', "from_to", "to", "date")
 
     def create(self, validated_data):
         request = self.context.get("request")
