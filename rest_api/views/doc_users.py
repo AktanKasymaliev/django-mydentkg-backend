@@ -33,6 +33,10 @@ class DoctorUsersView(generics.ListAPIView):
         else:
             return query
 
+class Doctor(generics.RetrieveAPIView):
+    serializer_class = DoctorUsersSerializer
+    queryset = DoctorUser.objects.all()
+
 class DoctorUserRegisterView(generics.CreateAPIView):
     serializer_class = DoctorRegisterSerializer
 

@@ -1,7 +1,7 @@
 from rest_api.views.views import CategoryListView, CommentAddView, \
      CommentsView, MakeReserveView, ReceptionAddView, ReceptionView, ReservedView
 from django.urls import path
-from rest_api.views.doc_users import (DoctorChangePasswordView,
+from rest_api.views.doc_users import (Doctor, DoctorChangePasswordView,
                                      DoctorUsersView, DoctorUserRegisterView, 
                                      DoctorLoginView, DoctorForgotPasswordView, DoctorInfo)
 from rest_api.views.client_users import (ClientChangePasswordView, 
@@ -18,6 +18,7 @@ urlpatterns = [
     path("api/v1/doctor/user/change/password/", DoctorChangePasswordView.as_view()),
     path("api/v1/doctor/user/reset/password/", DoctorForgotPasswordView.as_view()),
     path("api/v1/doctors/<str:category>/", CategoryListView.as_view()),
+    path("api/v1/doctor/<int:pk>/", Doctor.as_view()),
     path("api/v1/get/doctor/", DoctorInfo.as_view()),
 
     path("api/v1/client/users/", ClientUsersView.as_view()),
