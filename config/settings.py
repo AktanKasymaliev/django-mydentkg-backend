@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get("DJANGO_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG")
 
-ALLOWED_HOSTS = ["hidden-basin-43610.herokuapp.com", "localhost", '127.0.0.1']
+ALLOWED_HOSTS = ["mydent-backend.herokuapp.com", "localhost", '127.0.0.1']
 
 AUTH_USER_MODEL = 'customUser.User'
 
